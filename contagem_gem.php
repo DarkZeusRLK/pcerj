@@ -121,8 +121,6 @@
         echo "<td>{$row['passaporte']}</td>";
         echo "</tr>";
       }
-
-      $usuario['qra'] = $row['qra'];
       ?>
     </tbody>
   </table>
@@ -169,12 +167,6 @@
 
   <div id="total-hours" style="display:none;">
     <h2>Total de Horas Trabalhadas: <span id="total"></span></h2>
-  </div>
-  <p class="text-center">Mensagem de Relatório</p>
-  <div class="relatorio">
-    <h3 class="text-center">QRA:<?php $usuario['qra']; ?></h3>
-    <h3 class="text-center">Nome:</h3>
-    <h3 class="text-center">Passaporte: </h3>
   </div>
   <!-- Rodapé -->
   <footer class="footer">
