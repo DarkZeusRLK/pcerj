@@ -1,3 +1,19 @@
+<?php
+// Inicializa variáveis para armazenar os dados do relatório
+$nome = '';
+$qra = '';
+$passaporte = '';
+$totalHoras = '';
+
+// Recebe os dados do formulário
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $nome = $_POST['nome'];
+  $qra = $_POST['qra'];
+  $passaporte = $_POST['passaporte'];
+  $totalHoras = $_POST['total-horas']; // Recebendo o total de horas do campo oculto
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -40,23 +56,11 @@
       margin: 10px;
     }
 
-    .card img {
-      width: 100%;
-      height: auto;
-      border-radius: 4px black;
-    }
-
-    .card h3 {
-      margin: 10px 0;
-      font-weight: 700;
-    }
-
     /* Estilos para o relatório */
     #summary {
       margin-top: 20px;
       padding: 15px;
-      background-color: #e9ecef;
-      border: 1px solid #007bff;
+      background-color: black border: 1px solid #007bff;
       border-radius: 8px;
       font-family: 'Roboto', sans-serif;
     }
@@ -125,49 +129,43 @@
     </tbody>
   </table>
 
-  <!-- Cards dos Comandantes -->
-  <div class="card-container">
-    <div class="card">
-      <img src="Imagens/comandante1.jpg" alt="Comandante">
-      <h3>Dark</h3>
-    </div>
-    <div class="card">
-      <img src="Imagens/comandante2.jpg" alt="Sub-Comandante">
-      <h3>Andrade</h3>
-    </div>
-  </div>
-
   <h1 class="text-center">Calculadora de Horas Trabalhadas</h1>
-  <form id="hours-form">
+  <form id="hours-form" method="POST">
     <div id="user-info">
       <label>Nome:</label>
-      <input type="text" name="nome" readonly>
+      <input type="text" name="nome" value="<?php echo htmlspecialchars($nome); ?>" readonly>
       <label>QRA:</label>
-      <input type="text" name="qra" readonly>
+      <input type="text" name="qra" value="<?php echo htmlspecialchars($qra); ?>" readonly>
       <label>Passaporte:</label>
-      <input type="text" name="passaporte" readonly>
+      <input type="text" name="passaporte" value="<?php echo htmlspecialchars($passaporte); ?>" readonly>
     </div>
     <div id="time-inputs">
       <div class="time-entry">
         <label>Hora de Início:</label>
-        <input type="time" name="start-time[]">
+        <input type="time" name="start-time[]" required>
         <label>Hora de Fim:</label>
-        <input type="time" name="end-time[]">
-        <button type="button" class="remove-time" title="Remover entrada">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
-            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
-          </svg>
-        </button>
+        <input type="time" name="end-time[]" required>
       </div>
     </div>
+
+    <!-- Campo oculto para total de horas -->
+    <input type="hidden" name="total-horas" id="total-horas">
+
     <button type="button" id="add-time">Adicionar Mais Horas</button>
     <button type="submit">Calcular Total</button>
   </form>
 
-  <div id="total-hours" style="display:none;">
-    <h2>Total de Horas Trabalhadas: <span id="total"></span></h2>
+  <div id="total-hours" style="display: <?php echo !empty($totalHoras) ? 'block' : 'none'; ?>;">
+    <h2>Total de Horas Trabalhadas: <span id="total"><?php echo isset($totalHoras) ? htmlspecialchars($totalHoras) : ''; ?></span></h2>
+    <div id="summary" style="display: <?php echo !empty($nome) && !empty($qra) && !empty($passaporte) ? 'block' : 'none'; ?>;">
+      <h1>Resumo</h1>
+      <p>Nome: <?php echo htmlspecialchars($nome); ?></p>
+      <p>QRA: <?php echo htmlspecialchars($qra); ?></p>
+      <p>Passaporte: <?php echo htmlspecialchars($passaporte); ?></p>
+      <p>Total de Horas: <?php echo htmlspecialchars($totalHoras); ?></p>
+    </div>
   </div>
+
   <!-- Rodapé -->
   <footer class="footer">
     <div class="footer-content">
@@ -186,85 +184,79 @@
     const form = document.getElementById('hours-form');
     const totalHoursDiv = document.getElementById('total-hours');
     const totalSpan = document.getElementById('total');
-    const reportMessage = document.getElementById('report-message');
+    const totalHorasInput = document.getElementById('total-horas');
 
     // Adiciona nova entrada de tempo
     document.getElementById('add-time').addEventListener('click', () => {
       const timeInputs = document.createElement('div');
       timeInputs.className = 'time-entry';
       timeInputs.innerHTML = `
-        <label>Hora de Início:</label>
-        <input type="time" name="start-time[]">
-        <label>Hora de Fim:</label>
-        <input type="time" name="end-time[]">
-        <button type="button" class="remove-time" title="Remover entrada">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
-            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
-          </svg>
-        </button>
+      <label>Hora de Início:</label>
+      <input type="time" name="start-time[]" required>
+      <label>Hora de Fim:</label>
+      <input type="time" name="end-time[]" required>
+      <button type="button" class="remove-time" title="Remover entrada">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+          <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+          <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2h4V1a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1h4v1zM4.118 4l.882 9h6l.882-9H4.118zM2.5 2v1h11V2h-11z"/>
+        </svg>
+      </button>
       `;
       document.getElementById('time-inputs').appendChild(timeInputs);
-    });
 
-    // Remove uma entrada de tempo
-    document.body.addEventListener('click', (event) => {
-      if (event.target.classList.contains('remove-time')) {
-        event.target.parentElement.parentElement.remove();
-      }
-    });
-
-    // Calcula o total de horas trabalhadas
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      let totalMinutes = 0;
-
-      const startTimes = form.querySelectorAll('input[name="start-time[]"]');
-      const endTimes = form.querySelectorAll('input[name="end-time[]"]');
-
-      startTimes.forEach((startTime, index) => {
-        const start = startTime.value;
-        const end = endTimes[index].value;
-
-        if (start && end) {
-          const startDate = new Date(`1970-01-01T${start}:00`);
-          const endDate = new Date(`1970-01-01T${end}:00`);
-
-          // Se a hora de fim for menor que a hora de início, isso significa que a hora de fim é no dia seguinte
-          if (endDate < startDate) {
-            endDate.setDate(endDate.getDate() + 1); // Adiciona um dia
-          }
-
-          const diffMinutes = (endDate - startDate) / (1000 * 60);
-          totalMinutes += diffMinutes;
-        }
+      // Adiciona o evento de clique para remover a entrada
+      timeInputs.querySelector('.remove-time').addEventListener('click', function () {
+        timeInputs.remove();
       });
+    });
 
-      // Cálculo total em horas e minutos
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      let totalMinutes = 0;
+      const startTimes = document.querySelectorAll('input[name="start-time[]"]');
+      const endTimes = document.querySelectorAll('input[name="end-time[]"]');
+
+      for (let i = 0; i < startTimes.length; i++) {
+        const startTime = startTimes[i].value;
+        const endTime = endTimes[i].value;
+
+        if (!startTime || !endTime) {
+          alert('Por favor, preencha todos os campos de horário.');
+          return;
+        }
+
+        // Converte as horas para objetos Date
+        let start = new Date(`1970-01-01T${startTime}:00`);
+        let end = new Date(`1970-01-01T${endTime}:00`);
+
+        // Verifica se o horário de fim é anterior ao de início (passando para o dia seguinte)
+        if (end < start) {
+          end.setDate(end.getDate() + 1); // Adiciona 1 dia ao horário de fim
+        }
+
+        const diffInMinutes = (end - start) / (1000 * 60);
+        totalMinutes += diffInMinutes;
+      }
+
       const totalHours = Math.floor(totalMinutes / 60);
       const remainingMinutes = totalMinutes % 60;
 
-      // Se o total de horas for maior que 24, exiba corretamente
-      totalSpan.textContent = `${totalHours} horas e ${remainingMinutes} minutos`;
+      totalSpan.textContent = `${totalHours}h ${remainingMinutes}m`;
+      totalHorasInput.value = `${totalHours}h ${remainingMinutes}m`; // Adiciona o valor ao campo oculto
 
-      // Atualiza a mensagem do relatório
-      reportMessage.textContent = `Você trabalhou um total de ${totalHours} horas e ${remainingMinutes} minutos.`;
-      totalHoursDiv.style.display = 'block';
+      // Agora que o total foi calculado, enviamos o formulário
+      form.submit();
     });
 
-    // Função para rolar até a calculadora e preencher os campos
     function scrollToCalculator(nome, qra, passaporte) {
       document.querySelector('input[name="nome"]').value = nome;
       document.querySelector('input[name="qra"]').value = qra;
       document.querySelector('input[name="passaporte"]').value = passaporte;
 
-      window.scrollTo({
-        top: document.getElementById('time-inputs').offsetTop,
-        behavior: 'smooth'
-      });
+      document.getElementById('hours-form').scrollIntoView({ behavior: 'smooth' });
     }
   </script>
-
 </body>
 
 </html>
