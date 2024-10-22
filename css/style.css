@@ -475,3 +475,87 @@ button:hover {
   margin-top: 10px;
   color: #fff;
 }
+/* Estilos da tabela */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+th,
+td {
+  border: 1px solid #ffff;
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  background-color: black;
+  color: white;
+}
+
+/* Estilos da mensagem */
+#summary {
+  display: none;
+  margin-top: 20px;
+  border: 1px solid #007bff;
+  padding: 10px;
+  background-color: #f8f9fa;
+}
+form {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 80%;
+  margin: 20px 0;
+}
+
+#user-info {
+  margin-bottom: 20px;
+}
+
+#user-info label {
+  display: block;
+  margin: 10px 0 5px;
+  font-weight: bold;
+}
+
+#user-info input[type="text"] {
+  width: calc(100% - 22px);
+  padding: 10px;
+  border: 1px solid #007bff;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  background-color: #f9f9f9;
+  color: #555;
+  cursor: not-allowed; /* Indica que o campo é apenas leitura */
+}
+
+#time-inputs {
+  margin-bottom: 20px;
+}
+
+.time-entry {
+  margin-bottom: 15px;
+}
+
+input[type="time"] {
+  width: calc(100% - 22px);
+  padding: 10px;
+  border: 1px solid #007bff;
+  border-radius: 4px;
+  font-size: 16px;
+}
+.relatorio {
+  background-color: #a9a9a9;
+  border-radius: 10px;
+  padding: 10px;
+  width: 50%;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  display: block;
+  margin-left: 30rem;
+}

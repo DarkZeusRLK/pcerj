@@ -50,6 +50,24 @@
       margin: 10px 0;
       font-weight: 700;
     }
+
+    /* Estilos para o relatório */
+    #summary {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #e9ecef;
+      border: 1px solid #007bff;
+      border-radius: 8px;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    #summary h3 {
+      margin: 0;
+    }
+
+    #summary p {
+      margin: 5px 0 0;
+    }
   </style>
 </head>
 
@@ -78,6 +96,37 @@
     </ul>
   </div>
 
+  <!-- Tabela de usuários -->
+  <h2>Usuários Cadastrados</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>QRA</th>
+        <th>Passaporte</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php
+      // Conectar ao banco de dados e buscar usuários
+      include 'conexao.php'; // Inclua seu arquivo de conexão aqui
+      
+      $sql = "SELECT nome, qra, passaporte FROM usuarios"; // Ajuste a consulta conforme sua tabela
+      $result = mysqli_query($conexao, $sql);
+
+      while ($row = mysqli_fetch_assoc($result)) {
+        echo "<tr onclick=\"scrollToCalculator('{$row['nome']}', '{$row['qra']}', '{$row['passaporte']}')\">";
+        echo "<td>{$row['nome']}</td>";
+        echo "<td>{$row['qra']}</td>";
+        echo "<td>{$row['passaporte']}</td>";
+        echo "</tr>";
+      }
+
+      $usuario['qra'] = $row['qra'];
+      ?>
+    </tbody>
+  </table>
+
   <!-- Cards dos Comandantes -->
   <div class="card-container">
     <div class="card">
@@ -92,11 +141,19 @@
 
   <h1 class="text-center">Calculadora de Horas Trabalhadas</h1>
   <form id="hours-form">
+    <div id="user-info">
+      <label>Nome:</label>
+      <input type="text" name="nome" readonly>
+      <label>QRA:</label>
+      <input type="text" name="qra" readonly>
+      <label>Passaporte:</label>
+      <input type="text" name="passaporte" readonly>
+    </div>
     <div id="time-inputs">
       <div class="time-entry">
-        <label for="start-time[]">Hora de Início:</label>
+        <label>Hora de Início:</label>
         <input type="time" name="start-time[]">
-        <label for="end-time[]">Hora de Fim:</label>
+        <label>Hora de Fim:</label>
         <input type="time" name="end-time[]">
         <button type="button" class="remove-time" title="Remover entrada">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
@@ -113,7 +170,12 @@
   <div id="total-hours" style="display:none;">
     <h2>Total de Horas Trabalhadas: <span id="total"></span></h2>
   </div>
-
+  <p class="text-center">Mensagem de Relatório</p>
+  <div class="relatorio">
+    <h3 class="text-center">QRA:<?php $usuario['qra']; ?></h3>
+    <h3 class="text-center">Nome:</h3>
+    <h3 class="text-center">Passaporte: </h3>
+  </div>
   <!-- Rodapé -->
   <footer class="footer">
     <div class="footer-content">
@@ -124,28 +186,24 @@
         <a href="#">Sobre Nós</a>
         <a href="#">Contatos</a>
         <a href="#">Política de Privacidade</a>
-        <a href="#">Termos de Uso</a>
       </div>
-      <div class="footer-socials">
-        <a href="#"><i class="fab fa-facebook-f"></i></a>
-        <a href="#"><i class="fab fa-twitter"></i></a>
-        <a href="#"><i class="fab fa-instagram"></i></a>
-        <a href="#"><i class="fab fa-youtube"></i></a>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>&copy; 2024 Polícia Civil Revoada RJ. Todos os direitos reservados.</p>
     </div>
   </footer>
 
   <script>
-    document.getElementById('add-time').addEventListener('click', function () {
-      const newEntry = document.createElement('div');
-      newEntry.classList.add('time-entry');
-      newEntry.innerHTML = `
-        <label for="start-time[]">Hora de Início:</label>
+    const form = document.getElementById('hours-form');
+    const totalHoursDiv = document.getElementById('total-hours');
+    const totalSpan = document.getElementById('total');
+    const reportMessage = document.getElementById('report-message');
+
+    // Adiciona nova entrada de tempo
+    document.getElementById('add-time').addEventListener('click', () => {
+      const timeInputs = document.createElement('div');
+      timeInputs.className = 'time-entry';
+      timeInputs.innerHTML = `
+        <label>Hora de Início:</label>
         <input type="time" name="start-time[]">
-        <label for="end-time[]">Hora de Fim:</label>
+        <label>Hora de Fim:</label>
         <input type="time" name="end-time[]">
         <button type="button" class="remove-time" title="Remover entrada">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
@@ -154,59 +212,67 @@
           </svg>
         </button>
       `;
-      document.getElementById('time-inputs').appendChild(newEntry);
-
-      // Adiciona funcionalidade de remoção ao novo botão
-      newEntry.querySelector('.remove-time').addEventListener('click', function () {
-        newEntry.remove();
-      });
+      document.getElementById('time-inputs').appendChild(timeInputs);
     });
 
-    document.getElementById('hours-form').addEventListener('submit', function (e) {
-      e.preventDefault();
+    // Remove uma entrada de tempo
+    document.body.addEventListener('click', (event) => {
+      if (event.target.classList.contains('remove-time')) {
+        event.target.parentElement.parentElement.remove();
+      }
+    });
 
-      const startTimes = document.getElementsByName('start-time[]');
-      const endTimes = document.getElementsByName('end-time[]');
+    // Calcula o total de horas trabalhadas
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
       let totalMinutes = 0;
 
-      for (let i = 0; i < startTimes.length; i++) {
-        const startTime = startTimes[i].value;
-        const endTime = endTimes[i].value;
+      const startTimes = form.querySelectorAll('input[name="start-time[]"]');
+      const endTimes = form.querySelectorAll('input[name="end-time[]"]');
 
-        // Ignorar entradas vazias
-        if (startTime && endTime) {
-          const [startHours, startMinutes] = startTime.split(':').map(Number);
-          const [endHours, endMinutes] = endTime.split(':').map(Number);
+      startTimes.forEach((startTime, index) => {
+        const start = startTime.value;
+        const end = endTimes[index].value;
 
-          const startTotalMinutes = startHours * 60 + startMinutes;
-          let endTotalMinutes = endHours * 60 + endMinutes;
+        if (start && end) {
+          const startDate = new Date(`1970-01-01T${start}:00`);
+          const endDate = new Date(`1970-01-01T${end}:00`);
 
-          // Se o horário de término for menor que o de início, adicionar 24 horas (1440 minutos)
-          if (endTotalMinutes < startTotalMinutes) {
-            endTotalMinutes += 1440; // Adiciona 24 horas em minutos
+          // Se a hora de fim for menor que a hora de início, isso significa que a hora de fim é no dia seguinte
+          if (endDate < startDate) {
+            endDate.setDate(endDate.getDate() + 1); // Adiciona um dia
           }
 
-          totalMinutes += (endTotalMinutes - startTotalMinutes);
+          const diffMinutes = (endDate - startDate) / (1000 * 60);
+          totalMinutes += diffMinutes;
         }
-      }
+      });
 
-      // Exibir total mesmo se todos os campos não estiverem preenchidos
+      // Cálculo total em horas e minutos
       const totalHours = Math.floor(totalMinutes / 60);
       const remainingMinutes = totalMinutes % 60;
-      const totalDisplay = `${totalHours} hora(s) e ${remainingMinutes} minuto(s)`;
 
-      document.getElementById('total').innerText = totalDisplay;
-      document.getElementById('total-hours').style.display = 'block';
+      // Se o total de horas for maior que 24, exiba corretamente
+      totalSpan.textContent = `${totalHours} horas e ${remainingMinutes} minutos`;
+
+      // Atualiza a mensagem do relatório
+      reportMessage.textContent = `Você trabalhou um total de ${totalHours} horas e ${remainingMinutes} minutos.`;
+      totalHoursDiv.style.display = 'block';
     });
 
-    // Funcionalidade de remoção para entradas existentes
-    document.querySelectorAll('.remove-time').forEach(button => {
-      button.addEventListener('click', function () {
-        button.parentElement.remove();
+    // Função para rolar até a calculadora e preencher os campos
+    function scrollToCalculator(nome, qra, passaporte) {
+      document.querySelector('input[name="nome"]').value = nome;
+      document.querySelector('input[name="qra"]').value = qra;
+      document.querySelector('input[name="passaporte"]').value = passaporte;
+
+      window.scrollTo({
+        top: document.getElementById('time-inputs').offsetTop,
+        behavior: 'smooth'
       });
-    });
+    }
   </script>
+
 </body>
-<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
 
 </html>
