@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memorial de Imortais</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Georgia', serif;
+      background: url('https://via.placeholder.com/1920x1080?text=Wood+Texture') no-repeat center center fixed;
+      background-size: cover;
+      color: #4a2c2a;
+    }
+
+    header {
+      background-color: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      padding: 20px 0;
+      text-align: center;
+      position: relative;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('https://via.placeholder.com/1920x300?text=Curtains') no-repeat center;
+      background-size: cover;
+      opacity: 0.6;
+      z-index: -1;
+    }
+
+    header h1 {
+      font-size: 3em;
+      margin: 0;
+    }
+
+    header p {
+      font-size: 1.2em;
+      margin: 10px 0 0;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 30px auto;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background-color: rgba(255, 255, 255, 0.9);
+      border: 2px solid #4a2c2a;
+      border-radius: 10px;
+      overflow: hidden;
+      text-align: center;
+      transition: transform 0.3s;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+    }
+
+    .card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .card h3 {
+      margin: 15px 0;
+      font-size: 1.7em;
+      color: #4a2c2a;
+    }
+
+    .card p {
+      padding: 0 15px 20px;
+      font-size: 1em;
+    }
+
+    .card .chair {
+      font-style: italic;
+      color: #8b4513;
+      margin-top: -10px;
+      display: block;
+    }
+
+    footer {
+      background-color: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      text-align: center;
+      padding: 15px 0;
+      margin-top: 30px;
+    }
+
+    footer p {
+      margin: 0;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Memorial de Imortais</h1>
+    <p>Homenagem aos grandes mestres que ocuparam as cadeiras da academia</p>
+  </header>
+
+  <div class="container">
+    <div class="grid">
+      <div class="card">
+        <img src="https://via.placeholder.com/250" alt="Foto do Imortal">
+        <h3>Dr. João Silva</h3>
+        <span class="chair">Cadeira Nº 1</span>
+        <p>Especialista em táticas policiais e autor de livros renomados na área.</p>
+      </div>
+      <div class="card">
+        <img src="https://via.placeholder.com/250" alt="Foto do Imortal">
+        <h3>Profa. Maria Oliveira</h3>
+        <span class="chair">Cadeira Nº 2</span>
+        <p>Pioneira no ensino de técnicas de negociação em situações de risco.</p>
+      </div>
+      <div class="card">
+        <img src="https://via.placeholder.com/250" alt="Foto do Imortal">
+        <h3>Dr. Carlos Almeida</h3>
+        <span class="chair">Cadeira Nº 3</span>
+        <p>Contribuiu significativamente para o treinamento estratégico de equipes.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2024 Academia de Letras - Todos os direitos reservados</p>
+  </footer>
+</body>
+
+</html>

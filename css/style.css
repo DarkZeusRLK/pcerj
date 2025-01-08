@@ -559,3 +559,131 @@ input[type="time"] {
   display: block;
   margin-left: 30rem;
 }
+.tribute-section {
+  background-color: #f5f5f5;
+  padding: 50px 20px;
+  text-align: center;
+}
+
+.tribute-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.tribute-card {
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  max-width: 300px;
+  text-align: left;
+}
+
+.tribute-photo {
+  width: 100%;
+  height: auto;
+}
+
+.tribute-card h3 {
+  margin: 10px;
+  font-size: 1.5rem;
+}
+
+.tribute-card p {
+  margin: 10px;
+  font-size: 1rem;
+  color: #555;
+}
+.delegates-section {
+  background-color: #f8f9fa;
+  padding: 50px 20px;
+  text-align: center;
+}
+
+.delegate-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.delegate-card {
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  max-width: 300px;
+  overflow: hidden;
+  text-align: center;
+}
+
+.delegate-photo {
+  width: 100%;
+  height: auto;
+}
+
+.delegate-card h3 {
+  margin: 10px;
+  font-size: 1.4rem;
+  color: #333;
+}
+
+.delegate-card p {
+  margin: 10px;
+  font-size: 1rem;
+  color: #555;
+}
+
+.delegate-card.general {
+  border: 2px solid #0056b3;
+}
+
+.delegate-card.adjunto {
+  border: 2px solid #17a2b8;
+}
+.grupamentos {
+  margin-top: 40px;
+  padding: 20px;
+  background-color: #161515;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.grupamento {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 20px;
+}
+
+.grupamento img {
+  width: 200px;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.grupamento .descricao {
+  max-width: 600px;
+}
+
+.grupamento h3 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.grupamento p {
+  margin: 5px 0 0;
+  font-size: 1rem;
+}
+
+.text-grup {
+  color: white;
+  text-align: center;
+  font-size: 50px;
+}
+.descricao {
+  color: white;
+}
